@@ -7,7 +7,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class AlumnoActualizarActivity extends Activity {
-
 	ControlBD helper;
 	EditText editCarnet;
 	EditText editId_integrante;
@@ -16,6 +15,7 @@ public class AlumnoActualizarActivity extends Activity {
 	EditText editNombres_a;
 	EditText editApellidos_a;
 	EditText editDireccion;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -32,14 +32,14 @@ public class AlumnoActualizarActivity extends Activity {
 	}
 
 	public void actualizarAlumno(View v) {
-		Alumno alumno = new Alumno();
+		Talumno alumno = new Talumno();
 		alumno.setCarnet(editCarnet.getText().toString());
+		alumno.setId_integrante(editId_integrante.getText().toString());
 		alumno.setTelefono_a(editTelefono_a.getText().toString());
 		alumno.setCorreo_a(editCorreo_a.getText().toString());
 		alumno.setNombres_a(editNombres_a.getText().toString());
 		alumno.setApellidos_a(editApellidos_a.getText().toString());
 		alumno.setDireccion(editDireccion.getText().toString());
-		alumno.setId_integrante(editId_integrante.getText().toString());
 		
 		helper.abrir();
 		String estado = helper.actualizar(alumno);
@@ -53,6 +53,7 @@ public class AlumnoActualizarActivity extends Activity {
 		editCorreo_a.setText("");
 		editNombres_a.setText("");
 		editApellidos_a.setText("");
+		editDireccion.setText("");
 	}
 	}
 

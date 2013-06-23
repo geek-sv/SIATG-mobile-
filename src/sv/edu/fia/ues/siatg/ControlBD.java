@@ -17,9 +17,8 @@ public class ControlBD{
 	}
 
 	
-	
 	private static final String[]camposAlumno = new String [] 
-			{"carnet","id_integrante","nombre_a","apellido_a", "direccion", "telefono_a", "correo_a"};
+			{"carnet","id_integrante", "telefono_a", "correo_a","nombre_a","apellido_a", "direccion"};
 			private static final String[]camposAsesoria = new String [] 
 			{"id_asesoria","id_tg","hora_asesoria","num_asesoria", "fecha_asesoria", "observacion_a"};
 			private static final String[] camposAsistencia = new String [] 
@@ -926,26 +925,24 @@ public String eliminar(Tperfil tperfil){
 						//////////////////////////////nestor////////////////////////////////
 						
 						
+				
 						
-						
-						
-						public String insertar(Alumno alumno) {
+					
+						public String insertar(Talumno alumno) {
 
 							String regInsertados = "Registro Insertado Nº= ";
 							long contador = 0;
-							ContentValues ubi = new ContentValues();
-							ubi.put("carnet", alumno.getCarnet());
-							ubi.put("id_integrante", alumno.getId_integrante());
-							ubi.put("nombres_a", alumno.getNombres_a());
-							ubi.put("apellidos_a", alumno.getApellidos_a());
-							ubi.put("direccion", alumno.getDireccion());
-							ubi.put("telefono_a", alumno.getTelefono_a());
+							ContentValues alu = new ContentValues();
+							alu.put("carnet", alumno.getCarnet());
+							alu.put("id_integrante", alumno.getId_integrante());
+							alu.put("telefono_a", alumno.getTelefono_a());
+							alu.put("correo_a", alumno.getCorreo_a());
+							alu.put("nombre_a", alumno.getNombres_a());
+							alu.put("apellido_a", alumno.getApellidos_a());
+							alu.put("direccion", alumno.getDireccion());
 							
-							ubi.put("correo_a", alumno.getCorreo_a());
-							
-							
-							
-							contador = db.insert("alumno", null, ubi);
+																	
+							contador = db.insert("alumno", null, alu);
 							if (contador == -1 || contador == 0) {
 								regInsertados = "Error al Insertar el registro, Registro Duplicado. Verificar inserción";
 							} else {
@@ -954,22 +951,21 @@ public String eliminar(Tperfil tperfil){
 							return regInsertados;
 
 						}
-
-						
+							
 						 //consultar Alumno
 						
-						public Alumno consultarAlumno(String carnet){
+						public Talumno consultarAlumno(String carnet){
 							String[] id = {carnet};
 							Cursor cursor = db.query("alumno", camposAlumno, "carnet = ?", id,null, null, null);
 							if(cursor.moveToFirst()){
-								Alumno alumno = new Alumno();
+								Talumno alumno = new Talumno();
 								alumno.setCarnet(cursor.getString(0));
 								alumno.setId_integrante(cursor.getString(1));
 								alumno.setTelefono_a(cursor.getString(2));
-								alumno.setCorreo_a(cursor.getString(1));
-								alumno.setNombres_a(cursor.getString(2));
-								alumno.setApellidos_a(cursor.getString(1));
-								alumno.setDireccion(cursor.getString(1));
+								alumno.setCorreo_a(cursor.getString(3));
+								alumno.setNombres_a(cursor.getString(4));
+								alumno.setApellidos_a(cursor.getString(5));
+								alumno.setDireccion(cursor.getString(6));
 							
 								return alumno;
 							}
@@ -979,33 +975,38 @@ public String eliminar(Tperfil tperfil){
 							}
 						}
 						
-						
+					
 						//actualizar Alumno
 
-						public String actualizar(Alumno alumno){
+						public String actualizar(Talumno alumno){
 							
-							if(verificarIntegridadDiana(alumno, 4)){
+							if(verificarIntegridadDiana(alumno, 6)){
 								
 								String[] id = {alumno.getCarnet()};
 								ContentValues cv = new ContentValues();
-								cv.put("nombres_a",alumno.getNombres_a());
-								cv.put("apellidos_a",alumno.getApellidos_a());
+								cv.put("id_integrante",alumno.getId_integrante());
+								cv.put("telefono_a",alumno.getTelefono_a());
+								cv.put("correo_a",alumno.getCorreo_a());
+								cv.put("nombre_a",alumno.getNombres_a());
+								cv.put("apellido_a",alumno.getApellidos_a());
+								cv.put("direccion",alumno.getDireccion());
+								
 								db.update("alumno", cv, "carnet = ?", id);
 								return "Registro Actualizado Correctamente";
-								} else{
-								return "Registro con carnet" + alumno.getCarnet() + " no existe";
+								} 
+							else{
+								return "Registro con carnet " + alumno.getCarnet() + " no existe";
 								}
 						}
 						
-						
 						//eliminar Alumno
-						public String eliminar(Alumno alumno){
+						public String eliminar(Talumno alumno){
 							String regAfectados="filas afectadas= ";
 							int contador=0;
-							if (verificarIntegridadDiana(alumno,3)) {
-							contador+=db.delete("alumno", "carnet='"+alumno.getCarnet()+"'", null);
+							if (verificarIntegridadDiana(alumno,7)) {
+							contador+=db.delete("detalle_nota", "carnet='"+alumno.getCarnet()+"'", null);
 							}
-							contador+=db.delete("alumno", "id_integrante='"+alumno.getId_integrante()+"'", null);
+							contador+=db.delete("alumno", "carnet='"+alumno.getCarnet()+"'", null);
 							regAfectados+=contador;
 							return regAfectados;
 						}
@@ -1147,7 +1148,7 @@ public String eliminar(Tperfil tperfil){
 				return true;
 			}
 			return false;
-		}// cierra case 5
+		}// cierra case 4
 		
 		case 5: {
 
@@ -1163,6 +1164,35 @@ public String eliminar(Tperfil tperfil){
 			}
 			return false;
 		}
+		
+case 6: {
+			// verificar que exista ubicacion al actualizar ubicacion
+			Talumno alumno2 = (Talumno) dato;
+			String[] id = { alumno2.getCarnet() };
+			abrir();
+			Cursor c2 = db.query("alumno", null, "carnet = ?", id,null, null, null);
+
+			if (c2.moveToFirst()) {
+				// Se encontro alumno
+				return true;
+			}
+			return false;
+		}// cierra case 4
+/*		
+		case 7: {
+			//verifica integirdad con detalle_nota al eliminar ubicacion
+			Alumno alumno = (Alumno) dato;
+			Cursor c = db.query(true, "detalle_nota",
+					new String[] { "carnet" }, "carnet='"+ alumno.getCarnet() + "'", null, null,null, null, null);
+
+			if (c.moveToFirst())
+
+				return true;
+			else
+
+				return false;
+		}// cierra case 7
+		*/
 		default:
 
 			return false;
@@ -1180,105 +1210,104 @@ public String llenarBD(){
 	
 	
 	//campos para la tabla perfil
-	final String[] VPidperfil = {"PER0001","PER0002","PER0003","PER0004","PER0005","PER0006","PER0007","PER0008","PER0009","PER0010"};
-	final String[] VPidgrupotg = {"GRP01","GRP02","GRP03","GRP04","GRP05","GRP06","GRP07","GRP08","GRP09","GRP10"};
-	final String[] VPidtg = {"TG00001","TG00002","TG00003","TG0004","TG00005","TG00006","TG00007","TG00008","TG00009","TG00010"};
-	final String[] VPidtipoproy = {"0000001","0000002","0000001","0000002","0000001","0000002","0000001","0000002","0000001","0000002"};
-	final String[] VPtema = {"TEMA 1","TEMA 2","TEMA 3","TEMA 4","TEMA 5","TEMA 6","TEMA 7","TEMA 8","TEMA 9","TEMA 10"};
-	final String[] VPestado = {"APROBADO","APROBADO","REPROBADO","REPROBADO","APROBADO","APROBADO","REPROBADO","REPROBADO","APROBADO","APROBADO"};
-	final String[] VPcarrera = {"ING. INDUSRIAL","ING. CIVIL","ING DE SISTEMAS INF.","ING. QUIMICA","ING. INDUSTRIAL","ING. DE ALIMENTOS","ING. INDUSRIAL","ING. CIVIL","ING DE SISTEMAS INF.","ING. QUIMICA"};
-	
-	//campos para la tabla revision perfil
-	final String[] VRPidrevperfil = {"REVPER01","REVPER02","REVPER03","REVPER04","REVPER05","REVPER06","REVPER07","REVPER08","REVPER09","REVPER010"};
-	final String[] VRPidperfil = {"PER0001","PER0002","PER0003","PER0004","PER0005","PER0006","PER0007","PER0008","PER0009","PER00010"};
-	final String[] VRPiddocente = {"CG02001","EC02002","AN003001","BM04002","CA05015","JM06025","LB14010","BD16025","YV02036","NH14025"};
-	final String[] VRPfecharev = {"01/05/13","25/04/13","14/01/13","10/02/13","20/03/13","02/03/13","25/04/13","14/04/13","10/07/13","20/10/13"};
-	final String[] VRPobservacionrev = {"CORREGIR OBJETIVOS","CORREGIR MODELO FISICO","NINGUNA","REPLANTEAR REQUERIMIENTOS","CORREGIR OBJETIVOS","CORREGIR MODELO FISICO","NINGUNA","REPLANTEAR REQUERIMIENTOS","CORREGIR MODELO FISICO","NINGUNA"};
-	
-	//campos para la tabla docente
-	final String[] VDiddocente = {"CG02001","EC02002","AN003001","BM04002","CA05015","JM06025","LB14010","BD16025","YV02036","NH14025"};
-	final int[] VDcanperfilesapr = {5,7,9,8,4,14,10,20,3,5};
-	final int[] VDcanperfilesrep = {1,2,4,3,2,5,6,2,1,3};
-	final String[] VDcorreod = {"CGONZALEZ@GMAIL.COM","ECARBALLO@GMAIL.COM","ANUILA@GMAIL.COM","BMONTANO@GMAIL.COM","CAYALA@GMAIL.COM","JMARIA@GMAIL.COM","SMONTANO@GMAIL.COM","BDIAZ@GMAIL.COM","YVIGIL@GMAIL.COM","NHENRIQUEZ@GMAIL.COM"};
-	final String[] VDnombresd = {"CESAR","ELMER","ANGELICA","BORIS","CAROLINA","JOSE MARIA","SILVIA","BLADIMIR","YESENIA","NELLY"};
-	final String[] VDapellidosd = {"GONZALEZ","CARBALLO","NUILA","MONTANO","AYALA","SANCHEZ","MONTANO","DIAZ","VIGIL","HENRIQUEZ"};
-	
-	//campos para la tabla docente asignado
-	final String[] VDAiddocente = {"CG02001","EC02002","AN003001","BM04002","CA05015","JM06025","SM14010","BD16025","YV02036","NH14025"};
-	final float[] VDAporcentajedoc = {60,40,60,40,60,40,30,60,30,40,60,40,20,60,15,20,60,40,20,40};
-	final String[] VDAmodalidad = {"ASESOR","OBSERVADOR","ASESOR","OBSERVADOR","ASESOR","OBSERVADOR","ASESOR","OBSERVADOR","ASESOR","OBSERVADOR"};
-	
-	//campos para la tabla grupo tg
-	final String[] VGTGidgrupotg = {"GRP01","GRP02","GRP03","GRP04","GRP05","GRP06","GRP07","GRP08","GRP09","GRP10"};
-	final String[] VGTGanio = {"2012","2013","2012","2013","2012","2012","2013","2012","2013","2012"};
+		final String[] VPidperfil = {"PER0001","PER0002","PER0003","PER0004","PER0005","PER0006","PER0007","PER0008","PER0009","PER0010"};
+		final String[] VPidgrupotg = {"GRP0001","GRP0002","GRP0003","GRP0004","GRP0005","GRP0006","GRP0007","GRP0008","GRP0009","GRP0010"};
+		final String[] VPidtg = {"TG00001","TG00002","TG00003","TG00004","TG00005","TG00006","TG00007","TG00008","TG00009","TG00010"};
+		final String[] VPidtipoproy = {"0000001","0000002","0000001","0000002","0000001","0000002","0000001","0000002","0000001","0000002"};
+		final String[] VPtema = {"TEMA 1","TEMA 2","TEMA 3","TEMA 4","TEMA 5","TEMA 6","TEMA 7","TEMA 8","TEMA 9","TEMA 10"};
+		final String[] VPestado = {"APROBADO","APROBADO","REPROBADO","REPROBADO","APROBADO","APROBADO","REPROBADO","REPROBADO","APROBADO","APROBADO"};
+		final String[] VPcarrera = {"ING. INDUSRIAL","ING. CIVIL","ING DE SISTEMAS INF.","ING. QUIMICA","ING. INDUSTRIAL","ING. DE ALIMENTOS","ING. INDUSRIAL","ING. CIVIL","ING DE SISTEMAS INF.","ING. QUIMICA"};
+		
+		//campos para la tabla revision perfil
+		final String[] VRPidrevperfil = {"REVP001","REVP002","REVP003","REVP004","REVP005","REVP006","REVP007","REVP008","REVP009","REVP010"};
+		final String[] VRPidperfil = {"PER0001","PER0002","PER0003","PER0004","PER0005","PER0006","PER0007","PER0008","PER0009","PER0010"};
+		final String[] VRPiddocente = {"CG02001","EC02002","AN03001","BM04002","CA05015","JM06025","LB14010","BD16025","YV02036","NH14025"};
+		final String[] VRPfecharev = {"01/05/13","25/04/13","14/01/13","10/02/13","20/03/13","02/03/13","25/04/13","14/04/13","10/07/13","20/10/13"};
+		final String[] VRPobservacionrev = {"CORREGIR OBJETIVOS","CORREGIR MODELO FISICO","NINGUNA","REPLANTEAR REQUERIMIENTOS","CORREGIR OBJETIVOS","CORREGIR MODELO FISICO","NINGUNA","REPLANTEAR REQUERIMIENTOS","CORREGIR MODELO FISICO","NINGUNA"};
+		
+		//campos para la tabla docente
+		final String[] VDiddocente = {"CG02001","EC02002","AN03001","BM04002","CA05015","JM06025","LB14010","BD16025","YV02036","NH14025"};
+		final int[] VDcanperfilesapr = {5,7,9,8,4,14,10,20,3,5};
+		final int[] VDcanperfilesrep = {1,2,4,3,2,5,6,2,1,3};
+		final String[] VDcorreod = {"CGONZALEZ@GMAIL.COM","ECARBALLO@GMAIL.COM","ANUILA@GMAIL.COM","BMONTANO@GMAIL.COM","CAYALA@GMAIL.COM","JMARIA@GMAIL.COM","SMONTANO@GMAIL.COM","BDIAZ@GMAIL.COM","YVIGIL@GMAIL.COM","NHENRIQUEZ@GMAIL.COM"};
+		final String[] VDnombresd = {"CESAR","ELMER","ANGELICA","BORIS","CAROLINA","JOSE MARIA","SILVIA","BLADIMIR","YESENIA","NELLY"};
+		final String[] VDapellidosd = {"GONZALEZ","CARBALLO","NUILA","MONTANO","AYALA","SANCHEZ","MONTANO","DIAZ","VIGIL","HENRIQUEZ"};
+		
+		//campos para la tabla docente asignado
+		final String[] VDAiddocente = {"CG02001","EC02002","AN03001","BM04002","CA05015","JM06025","SM14010","BD16025","YV02036","NH14025"};
+		final float[] VDAporcentajedoc = {60,40,60,40,60,40,30,60,30,40,60,40,20,60,15,20,60,40,20,40};
+		final String[] VDAmodalidad = {"ASESOR","OBSERVADOR","ASESOR","OBSERVADOR","ASESOR","OBSERVADOR","ASESOR","OBSERVADOR","ASESOR","OBSERVADOR"};
+		
+		//campos para la tabla grupo tg
+		final String[] VGTGidgrupotg = {"GRP0001","GRP0002","GRP0003","GRP0004","GRP0005","GRP0006","GRP0007","GRP0008","GRP0009","GRP0010"};
+		final String[] VGTGanio = {"2012","2013","2012","2013","2012","2012","2013","2012","2013","2012"};
 
-	//campos para la tabla integrante grupo
-	final String[] VIGrepresentante = {"JONATAN TORRES","MARCELA ALDANA","JUAN SERRANO","MARTIN ESPINAL","DIANA MARTINEZ","JOSE FELICIANO","SUSANA TORRES","JOSE VIILANUEVA","JEYSSON LOPEZ","SUSANA SARAI"};
-	final float[] VIGnotafinal = {7,8,6,9,8,7,9,9,6,7};
-	final String[] VIGidintegrante = {"LS04016","AP05074","SM06043","TA02004","MO0517","CC03070","VB03012","VP03021","TM02004","EF04002"};
-	final String[] VIGidgrupotg = {"GRP01","GRP02","GRP03","GRP04","GRP05","GRP06","GRP07","GRP08","GRP09","GRP10"};
+		//campos para la tabla integrante grupo
+		final String[] VIGrepresentante = {"JONATAN TORRES","MARCELA ALDANA","JUAN SERRANO","MARTIN ESPINAL","DIANA MARTINEZ","JOSE FELICIANO","SUSANA TORRES","JOSE VIILANUEVA","JEYSSON LOPEZ","SUSANA SARAI"};
+		final float[] VIGnotafinal = {7,8,6,9,8,7,9,9,6,7};
+		final String[] VIGidintegrante = {"LS04016","AP05074","SM06043","TA02004","MO0517","CC03070","VB03012","VP03021","TM02004","EF04002"};
+		final String[] VIGidgrupotg = {"GRP0001","GRP0002","GRP0003","GRP0004","GRP0005","GRP0006","GRP0007","GRP0008","GRP0009","GRP0010"};
 
-	//campos para la tabla alumno
-	final String[] VAcarnet = {"LS04016","AP05074","SM06043","TA02004","MO0517","CC03070","VB03012","VP03021","TM02004","EF04002"};
-	final String[] VAidintegrante = {"INT00001","INT00002","INT00003","INT0004","INT00005","INT00006","INT00007","INT00008","INT00009","INT000010"};
-	final String[] VAtelefonoa = {"2450-1015","7520-4030","7829-1351","7995-0258","7398-1498","2225-9262","2224-6020","2210-1478","2531-1361","7410-1514"};
-	final String[] VAcoreoa = {"JLOPEZ@GMAIL.COM","MALDANA@GMAIL.COM","JCMENDOZA@GMAIL.COM","JTORRES@GMAIL.COM","DMARTINEZ@GMAIL.COM","ACASTILLO@GMAIL.COM","JBELTRAN@GMAIL.COM","JVILLA@GMAIL.COM","SUTORRES@GMAIL.COM","MARESPINAL@GMAIL.COM"};
-	final String[] VAnombresa = {"JEYSSON RICARDO","MARCELA YASMIN","JUAN CARLOS","JONATAN ESAU","DIANA CAROLINA","ANA GUADALUPE","JOSE FELICIANO","JOSE ALBERTO","SUSANA SARAI","MARTIN ALEXANDER"};
-	final String[] VAapellidos = {"LOPEZ SARMIENTO","ALDANA PALACIOS","SERRANO MENDOZA","TORRES ARAUJO","MARTINEZ ORELLANA","CASTILLO CALLES","VENTURA BELTRAN","VILLANUEVA PEREZ","TORRES MENJIVAR","ESPINAL FERNANDEZ"};
-	final String[] VAdireccion = {"COL. ATONAL SONSONATE","COL. AIDA SAN SALVADOR","COL. ZACAMIL MEJICANOS","COL. SANTAMARIA USULUTAN","COL. BARRA DE SANTIAGO, AHUACHAPAN","COL. CIMA 4 SAN SALVADOR","COL. LIBERTAD MEJICANOS","COL. SAN ANTONIO SOYAPANGO","COL. AVE MARIA OPICO","COL. AMERICA CUSCATANCINGO"};
-	
-	//campos para la tabla trabajo graduacion
-	final String[] VTGidtg = {"TG000001","TG000002","TG000003","TG00004","TG000005","TG000006","TG000007","TG000008","TG000009","TG0000010"};
-	final String[] VTGidperfil = {"PER0001","PER0002","PER0003","PER0004","PER0005","PER0006","PER0007","PER0008","PER0009","PER00010"};
-	final String[] VTGfechainicio = {"01/02/13","25/02/13","16/01/13","10/06/13","20/01/13","02/01/13","25/03/13","14/01/13","10/01/13","20/01/13"};
-	final String[] VTGfechafin = {"02/11/13","25/11/13","14/11/13","11/12/13","20/11/13","02/12/13","25/11/13","14/12/13","11/12/13","20/12/13"};
+		//campos para la tabla alumno
+		final String[] VAcarnet = {"LS04016","AP05074","SM06043","TA02004","MO0517","CC03070","VB03012","VP03021","TM02004","EF04002"};
+		final String[] VAidintegrante = {"INT0001","INT0002","INT00003","INT004","INT0005","INT0006","INT0007","INT0008","INT0009","INT0010"};
+		final String[] VAtelefonoa = {"2450-1015","7520-4030","7829-1351","7995-0258","7398-1498","2225-9262","2224-6020","2210-1478","2531-1361","7410-1514"};
+		final String[] VAcoreoa = {"JLOPEZ@GMAIL.COM","MALDANA@GMAIL.COM","JCMENDOZA@GMAIL.COM","JTORRES@GMAIL.COM","DMARTINEZ@GMAIL.COM","ACASTILLO@GMAIL.COM","JBELTRAN@GMAIL.COM","JVILLA@GMAIL.COM","SUTORRES@GMAIL.COM","MARESPINAL@GMAIL.COM"};
+		final String[] VAnombresa = {"JEYSSON RICARDO","MARCELA YASMIN","JUAN CARLOS","JONATAN ESAU","DIANA CAROLINA","ANA GUADALUPE","JOSE FELICIANO","JOSE ALBERTO","SUSANA SARAI","MARTIN ALEXANDER"};
+		final String[] VAapellidos = {"LOPEZ SARMIENTO","ALDANA PALACIOS","SERRANO MENDOZA","TORRES ARAUJO","MARTINEZ ORELLANA","CASTILLO CALLES","VENTURA BELTRAN","VILLANUEVA PEREZ","TORRES MENJIVAR","ESPINAL FERNANDEZ"};
+		final String[] VAdireccion = {"COL. ATONAL SONSONATE","COL. AIDA SAN SALVADOR","COL. ZACAMIL MEJICANOS","COL. SANTAMARIA USULUTAN","COL. BARRA DE SANTIAGO, AHUACHAPAN","COL. CIMA 4 SAN SALVADOR","COL. LIBERTAD MEJICANOS","COL. SAN ANTONIO SOYAPANGO","COL. AVE MARIA OPICO","COL. AMERICA CUSCATANCINGO"};
+		
+		//campos para la tabla trabajo graduacion
+		final String[] VTGidtg = {"TG00001","TG00002","TG00003","TG00004","TG00005","TG00006","TG00007","TG00008","TG00009","TG00010"};
+		final String[] VTGidperfil = {"PER0001","PER0002","PER0003","PER0004","PER0005","PER0006","PER0007","PER0008","PER0009","PER0010"};
+		final String[] VTGfechainicio = {"01/02/13","25/02/13","16/01/13","10/06/13","20/01/13","02/01/13","25/03/13","14/01/13","10/01/13","20/01/13"};
+		final String[] VTGfechafin = {"02/11/13","25/11/13","14/11/13","11/12/13","20/11/13","02/12/13","25/11/13","14/12/13","11/12/13","20/12/13"};
 
-	//campos para la tabla asesoria
-	final String[] VASEidasesoria = {"ASE0001","ASE0002","ASE0003","ASE0004","ASE0005","ASE0006","ASE0007","ASE0008","ASE0009","ASE00010"};
-	final String[] VASEidtg = {"TG000001","TG000002","TG000003","TG00004","TG000005","TG000006","TG000007","TG000008","TG000009","TG0000010"};
-	final String[] VASEhoraasesoria = {"8:00 AM","10:00 AM","2:00 PM","4:30 PM","11:00 AM","8:00 AM","10:00 AM","2:00 PM","4:30 PM","11:00 AM"};
-	final int[] VASEnumasesoria = {1,4,7,3,5,2,4,6,5,4};
-	final String[] VASEfechaasesoria = {"01/02/13","25/02/13","16/01/13","10/06/13","20/01/13","02/01/13","25/03/13","14/01/13","10/01/13","20/01/13"};
-	final String[] VASEobservaciona = {"CORREGIR OBJETIVOS","CORREGIR MODELO FISICO","NINGUNA","REPLANTEAR REQUERIMIENTOS","CORREGIR OBJETIVOS","CORREGIR MODELO FISICO","NINGUNA","REPLANTEAR REQUERIMIENTOS","CORREGIR MODELO FISICO","NINGUNA"};
+		//campos para la tabla asesoria
+		final String[] VASEidasesoria = {"ASE0001","ASE0002","ASE0003","ASE0004","ASE0005","ASE0006","ASE0007","ASE0008","ASE0009","ASE0010"};
+		final String[] VASEidtg = {"TG00001","TG00002","TG00003","TG00004","TG00005","TG00006","TG00007","TG00008","TG00009","TG00010"};
+		final String[] VASEhoraasesoria = {"8:00 AM","10:00 AM","2:00 PM","4:30 PM","11:00 AM","8:00 AM","10:00 AM","2:00 PM","4:30 PM","11:00 AM"};
+		final int[] VASEnumasesoria = {1,4,7,3,5,2,4,6,5,4};
+		final String[] VASEfechaasesoria = {"01/02/13","25/02/13","16/01/13","10/06/13","20/01/13","02/01/13","25/03/13","14/01/13","10/01/13","20/01/13"};
+		final String[] VASEobservaciona = {"CORREGIR OBJETIVOS","CORREGIR MODELO FISICO","NINGUNA","REPLANTEAR REQUERIMIENTOS","CORREGIR OBJETIVOS","CORREGIR MODELO FISICO","NINGUNA","REPLANTEAR REQUERIMIENTOS","CORREGIR MODELO FISICO","NINGUNA"};
 
-	//campos para la tabla asistencia
-	final String[] VASIidasistencia = {"ASI0001","ASI0002","ASI0003","ASI004","ASI0005","ASI0006","ASI0007","ASI0008","ASI0009","ASI0010"};
-	final String[] VASIidasesoria = {"ASE0001","ASE0002","ASE0003","ASE0004","ASE0005","ASE0006","ASE0007","ASE0008","ASE0009","ASE00010"};
-	final String[] VASIestadoas = {"COMPLETADA","COMPLETADA","PENDIENTE","COMPLETADA","PENDIENTE","COMPLETADA","COMPLETADA","PENDIENTE","COMPLETADA","PENDIENTE"};
+		//campos para la tabla asistencia
+		final String[] VASIidasistencia = {"ASI0001","ASI0002","ASI0003","ASI0004","ASI0005","ASI0006","ASI0007","ASI0008","ASI0009","ASI0010"};
+		final String[] VASIidasesoria = {"ASE0001","ASE0002","ASE0003","ASE0004","ASE0005","ASE0006","ASE0007","ASE0008","ASE0009","ASE0010"};
+		final String[] VASIestadoas = {"COMPLETADA","COMPLETADA","PENDIENTE","COMPLETADA","PENDIENTE","COMPLETADA","COMPLETADA","PENDIENTE","COMPLETADA","PENDIENTE"};
 
-	//campos para la tabla defensa
-	final String[] VDEiddefensa = {"DEF0001","DEF0002","DEF0003","DEF004","DEF0005","DEF0006","DEF0007","DEF0008","DEF0009","DEF0010"};
-	final String[] VDEidtg = {"TG00001","TG00002","TG00003","TG0004","TG00005","TG00006","TG00007","TG00008","TG00009","TG00010"};
-	final String[] VDEidubicacion = {"UBI0001","UBI0002","UBI0003","UBI004","UBI0005","UBI0006","UBI0007","UBI0008","UBI0009","UBI0010"};
-	final String[] VDEhora = {"8:00 AM","10:00 AM","2:00 PM","4:30 PM","11:00 AM","8:00 AM","10:00 AM","2:00 PM","4:30 PM","11:00 AM"};
-	final String[] VDEfechadef = {"02/06/13","25/05/13","14/06/13","10/06/13","20/05/13","02/06/13","25/04/13","14/04/13","10/07/13","20/10/13"};
-	
-	//campos para la tabla ubicacion
-	final String[] VUidubicacion = {"UBI0001","UBI0002","UBI0003","UBI004","UBI0005","UBI0006","UBI0007","UBI0008","UBI0009","UBI0010"};
-	final String[] VUlocal = {"A-340","B-11","B-21","B-31","C-11","C-21","C-31","D-11","D-21","D-31"};
-	final String[] VUdescripcionub = {"AUDITORIO MARMOL","AULA 11 EDIFICIO B","AULA 21 EDIFICIO B","AULA 31 EDIFICIO B","AULA 11 EDIFICIO C","AULA 21 EDIFICIO C","AULA 31 EDIFICIO C","AULA 11 EDIFICIO D","AULA 21 EDIFICIO D","AULA 31 EDIFICIO D"};
+		//campos para la tabla defensa
+		final String[] VDEiddefensa = {"DEF0001","DEF0002","DEF0003","DEF0004","DEF0005","DEF0006","DEF0007","DEF0008","DEF0009","DEF0010"};
+		final String[] VDEidtg = {"TG00001","TG00002","TG00003","TG0004","TG00005","TG00006","TG00007","TG00008","TG00009","TG00010"};
+		final String[] VDEidubicacion = {"UBI0001","UBI0002","UBI0003","UBI004","UBI0005","UBI0006","UBI0007","UBI0008","UBI0009","UBI0010"};
+		final String[] VDEhora = {"8:00 AM","10:00 AM","2:00 PM","4:30 PM","11:00 AM","8:00 AM","10:00 AM","2:00 PM","4:30 PM","11:00 AM"};
+		final String[] VDEfechadef = {"02/06/13","25/05/13","14/06/13","10/06/13","20/05/13","02/06/13","25/04/13","14/04/13","10/07/13","20/10/13"};
+		
+		//campos para la tabla ubicacion
+		final String[] VUidubicacion = {"UBI0001","UBI0002","UBI0003","UBI004","UBI0005","UBI0006","UBI0007","UBI0008","UBI0009","UBI0010"};
+		final String[] VUlocal = {"A-340","B-11","B-21","B-31","C-11","C-21","C-31","D-11","D-21","D-31"};
+		final String[] VUdescripcionub = {"AUDITORIO MARMOL","AULA 11 EDIFICIO B","AULA 21 EDIFICIO B","AULA 31 EDIFICIO B","AULA 11 EDIFICIO C","AULA 21 EDIFICIO C","AULA 31 EDIFICIO C","AULA 11 EDIFICIO D","AULA 21 EDIFICIO D","AULA 31 EDIFICIO D"};
 
-	//campos para la tabla etapa
-	final String[] VEidetapa = {"ETA0001","ETA0002","ETA0003","ETA004","ETA0005","ETA0006","ETA0007","ETA0008","ETA0009","ETA0010"};
-	final String[] VEiddefensa = {"DEF0001","DEF0002","DEF0003","DEF004","DEF0005","DEF0006","DEF0007","DEF0008","DEF0009","DEF0010"};
-	final String[] VEnombre = {"ANTEPROYECTO","PROYECTO","SISTEMA","PRESENTACION","FINAL","ANTEPROYECTO","PROYECTO","SISTEMA","PRESENTACION","FINAL"};
-	final String[] VEdescripcionet = {"DEFENSA ANTEPROYECTO","DEFENSA PROYECTO","DEFENSA SISTEMA","PRESENTACION SISTEMA","DEFENSA FINAL","DEFENSA ANTEPROYECTO","DEFENSA PROYECTO","DEFENSA SISTEMA","PRESENTACION SISTEMA","DEFENSA FINAL"};
-	final String[] VEporcentajeetapa = {"20","20","30","10","40","20","20","30","10","40"};
-	
-	//campos para la tabla detalle nota
-	final String[] VDNiddefensa = {"DEF0001","DEF0002","DEF0003","DEF0004","DEF0005","DEF0006","DEF0007","DEF0008","DEF0009","DEF0010"};
-	final String[] VDNcarnet = {"LS04016","AP05074","SM06043","TA02004","MO0517","CC03070","VB03012","VP03021","TM02004","EF04002"};
-	final String[] VDNnotaase = {"8","9","9","7","6","7","6","8","9","10"};
-	final String[] VDNnotaobs = {"8","9","9","7","6","7","6","8","9","10"};
-
+		//campos para la tabla etapa
+		final String[] VEidetapa = {"ETA0001","ETA0002","ETA0003","ETA004","ETA0005","ETA0006","ETA0007","ETA0008","ETA0009","ETA0010"};
+		final String[] VEiddefensa = {"DEF0001","DEF0002","DEF0003","DEF004","DEF0005","DEF0006","DEF0007","DEF0008","DEF0009","DEF0010"};
+		final String[] VEnombre = {"ANTEPROYECTO","PROYECTO","SISTEMA","PRESENTACION","FINAL","ANTEPROYECTO","PROYECTO","SISTEMA","PRESENTACION","FINAL"};
+		final String[] VEdescripcionet = {"DEFENSA ANTEPROYECTO","DEFENSA PROYECTO","DEFENSA SISTEMA","PRESENTACION SISTEMA","DEFENSA FINAL","DEFENSA ANTEPROYECTO","DEFENSA PROYECTO","DEFENSA SISTEMA","PRESENTACION SISTEMA","DEFENSA FINAL"};
+		final String[] VEporcentajeetapa = {"20","20","30","10","40","20","20","30","10","40"};
+		
+		//campos para la tabla detalle nota
+		final String[] VDNiddefensa = {"DEF0001","DEF0002","DEF0003","DEF0004","DEF0005","DEF0006","DEF0007","DEF0008","DEF0009","DEF0010"};
+		final String[] VDNcarnet = {"LS04016","AP05074","SM06043","TA02004","MO0517","CC03070","VB03012","VP03021","TM02004","EF04002"};
+		final String[] VDNnotaase = {"8","9","9","7","6","7","6","8","9","10"};
+		final String[] VDNnotaobs = {"8","9","9","7","6","7","6","8","9","10"};
 	
 	abrir();
-	db.execSQL("DELETE FROM alumno");
-	db.execSQL("DELETE FROM asesoria");
-	db.execSQL("DELETE FROM asistencia");
+	//db.execSQL("DELETE FROM alumno");
+	//db.execSQL("DELETE FROM asesoria");
+	//db.execSQL("DELETE FROM asistencia");
 	
 	Tperfil tperfil = new Tperfil();
-	for(int i=0;i<4;i++){
+	for(int i=0;i<10;i++){
 		
 		tperfil.setid_perfil(VPidperfil[i]);
 		tperfil.setid_grupo_tg(VPidgrupotg[i]);
@@ -1292,7 +1321,7 @@ public String llenarBD(){
 	}
 	
 	Tubicacion tubicacion = new Tubicacion();
-	for(int i=0;i<4;i++){
+	for(int i=0;i<10;i++){
 		
 		tubicacion.setId_ubicacion(VUidubicacion[i]);
 		tubicacion.setLocal(VUlocal[i]);
@@ -1311,7 +1340,7 @@ public String llenarBD(){
 	}
 	
 	Tdefensa tdefensa = new Tdefensa();
-	for(int i=0;i<4;i++){
+	for(int i=0;i<10;i++){
 		
 		tdefensa.setId_defensa(VDEiddefensa[i]);
 		tdefensa.setId_tg(VDEidtg[i]);
@@ -1323,7 +1352,7 @@ public String llenarBD(){
 	}
 	
 	Tintegrantegrupo tintegrantegrupo = new Tintegrantegrupo();
-	for(int i=0;i<4;i++){
+	for(int i=0;i<10;i++){
 		
 		tintegrantegrupo.setrepresentante(VIGrepresentante[i]);
 		tintegrantegrupo.setnota_final(VIGnotafinal[i]);
@@ -1334,7 +1363,7 @@ public String llenarBD(){
 	}
 	
 	Tdocente tdocente = new Tdocente();
-	for(int i=0;i<4;i++){
+	for(int i=0;i<10;i++){
 		
 		tdocente.setId_docente(VDiddocente[i]);
 		tdocente.setCan_perfiles_apr(VDcanperfilesapr[i]);
@@ -1347,10 +1376,9 @@ public String llenarBD(){
 		insertardocente(tdocente);
 	}
 	
-	
 
 	Tgrupotg tgrupotg = new Tgrupotg();
-	for(int i=0;i<4;i++){
+	for(int i=0;i<10;i++){
 		
 		tgrupotg.setId_grupo_tg(VGTGidgrupotg[i]);
 		tgrupotg.setAnio(VGTGanio[i]);
@@ -1361,7 +1389,7 @@ public String llenarBD(){
 	}
 	
 	Trevisionperfil trevisionperfil = new Trevisionperfil();
-	for(int i=0;i<4;i++){
+	for(int i=0;i<10;i++){
 		trevisionperfil.setId_rev_perfil(VRPidrevperfil[i]);
 		trevisionperfil.setId_perfil(VRPidperfil[i]);
 		trevisionperfil.setId_docente(VRPiddocente[i]);
@@ -1372,7 +1400,7 @@ public String llenarBD(){
 	}
 	
 	Tdocenteasignado tdocentea = new Tdocenteasignado();
-	for(int i=0;i<4;i++){
+	for(int i=0;i<10;i++){
 		tdocentea.setId_docente(VDAiddocente[i]);
 		tdocentea.setPorcentaje_doc(VDAporcentajedoc[i]);
 		tdocentea.setModalidad(VDAmodalidad[i]);
@@ -1380,26 +1408,23 @@ public String llenarBD(){
 		insertar(tdocentea);
 	}
 
-//////
 
-
-
-     Alumno talumno = new Alumno();
-	for(int i=0;i<4;i++){
-		talumno.setCarnet(VAcarnet[i]);
-		talumno.setId_integrante(VAidintegrante[i]);
-		talumno.setTelefono_a(VAtelefonoa[i]);
-		talumno.setCorreo_a(VAcoreoa[i]);
-        talumno.setNombres_a(VAnombresa[i]);
-		talumno.setApellidos_a(VAapellidos[i]);
-		talumno.setDireccion(VAdireccion[i]);
+     Talumno alumno = new Talumno();
+	for(int i=0;i<10;i++){
+		alumno.setCarnet(VAcarnet[i]);
+		alumno.setId_integrante(VAidintegrante[i]);
+        alumno.setNombres_a(VAnombresa[i]);
+		alumno.setApellidos_a(VAapellidos[i]);
+		alumno.setDireccion(VAdireccion[i]);
+		alumno.setTelefono_a(VAtelefonoa[i]);
+		alumno.setCorreo_a(VAcoreoa[i]);
 			
-		insertar(talumno);
+		insertar(alumno);
 	}
 
 
  DetalleNota tdetalle_nota= new DetalleNota();
-	for(int i=0;i<4;i++){
+	for(int i=0;i<10;i++){
                 tdetalle_nota.setId_defensa(VDNiddefensa [i]);
                 tdetalle_nota.setCarnet(VDNcarnet [i]);
 		tdetalle_nota.setNota_ase(VDNnotaase [i]);
@@ -1410,7 +1435,7 @@ public String llenarBD(){
 	}
 
 
-	  Tetapa tetapa = new Tetapa();
+	/*  Tetapa tetapa = new Tetapa();
 		for(int i=0;i<4;i++){
 			tetapa.setId_etapa(VEidetapa[i]);
 			tetapa.setId_defensa(VEiddefensa[i]);
@@ -1419,11 +1444,22 @@ public String llenarBD(){
 			tetapa.setPorcentaje(VEporcentajeetapa[i]);
 		
 				
-			insertar(talumno);
+			insertar(tetapa);
 		}
 
+	 Ttrabajograduacion trabajograduacion = new  Ttrabajograduacion();
+	for(int i=0;i<10;i++){
+		trabajograduacion.setIdtg(VTGidtg[i]);
+		trabajograduacion.setIdperfil(VTGidperfil[i]);
+		trabajograduacion.setFechainicio(VTGfechainicio[i]);
+		trabajograduacion.setFechafin(VTGfechafin[i]);
+			
+		insertar(trabajograduacion);
+	}
+		
+	*/
 		  Tasesoria tasesoria = new Tasesoria();
-			for(int i=0;i<4;i++){
+			for(int i=0;i<10;i++){
 				tasesoria.setid_asesoria(VASEidasesoria[i]);
 				tasesoria.setid_tg(VASEidtg[i]);
 				tasesoria.sethora_asesoria(VASEhoraasesoria[i]);
@@ -1435,7 +1471,7 @@ public String llenarBD(){
 			}
 			
 			DetalleNota detallenota = new DetalleNota();
-			for(int i=0;i<4;i++){
+			for(int i=0;i<10;i++){
 				detallenota.setId_defensa(VDNiddefensa[i]);
 				detallenota.setCarnet(VDNcarnet[i]);
 				detallenota.setNota_ase( VDNnotaase[i]);
@@ -1457,25 +1493,10 @@ public String llenarBD(){
 	
 			
 	cerrar();
-	return "Guardo Correctamente";
+	return "Datos Guardados Correctamente";
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
-
-
 
 
 	//las clases que se llaman Tnombreclase es la clase

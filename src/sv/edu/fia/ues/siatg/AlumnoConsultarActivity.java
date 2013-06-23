@@ -35,7 +35,7 @@ public class AlumnoConsultarActivity extends Activity {
 	}
 	public void consultarAlumno(View v) {
 		helper.abrir();
-		Alumno alumno = helper.consultarAlumno(editCarnet.getText().toString());
+		Talumno alumno = helper.consultarAlumno(editCarnet.getText().toString());
 		helper.cerrar();
 		
 	if(alumno == null)
@@ -56,6 +56,8 @@ public class AlumnoConsultarActivity extends Activity {
 		editCorreo_a.setText("");
 		editNombres_a.setText("");
 		editApellidos_a.setText("");
+		editDireccion.setText("");
+		
 	}
 	}
 

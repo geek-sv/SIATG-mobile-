@@ -18,7 +18,7 @@ public void onCreate(Bundle savedInstanceState) {
 }
 public void eliminarAlumno(View v){
 	String regEliminadas;
-	Alumno alumno=new Alumno();
+	Talumno alumno=new Talumno();
 	alumno.setCarnet(editCarnet.getText().toString());
 	controlhelper.abrir();
 	regEliminadas=controlhelper.eliminar(alumno);
@@ -26,3 +26,4 @@ public void eliminarAlumno(View v){
 	Toast.makeText(this, regEliminadas, Toast.LENGTH_SHORT).show();
 }
 }
+
