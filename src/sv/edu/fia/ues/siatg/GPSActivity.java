@@ -15,17 +15,37 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+import android.os.StrictMode;
+import android.annotation.SuppressLint;
+import android.widget.Toast;
+//import java.util.GregorianCalendar;
+
+@SuppressLint("NewApi")
+
 public class GPSActivity extends Activity {
 Button obtenerDir;
+
+Button guardarDir;
+
 EditText edtlatitud;
 EditText edtlongitud;
 EditText edtaltitud;
 TextView edtdireccion;
 LocationManager locationManager;
+
+private String urlExterno = "http://ef04002pdm115.comuf.com/ws_insertardireccion.php";
+//private String urlLocal = "http://192.168.87.41:8080/CarnetWebApplicationBASE/webresources/sv.ues.fia.carnet.entidad.nota/";
+private String urlLocal = "http://localhost:8080/EF04002WebApplicationDB/webresources/sv.ues.fia.siatg.entidad.direccion";
 @Override
+@SuppressLint("NewApi")
 protected void onCreate(Bundle savedInstanceState) {
 super.onCreate(savedInstanceState);
 setContentView(R.layout.activity_gps);
+
+//StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+//StrictMode.setThreadPolicy(policy);
+
 obtenerDir = (Button) findViewById(R.id.btnObtenerDatosPos);
 edtlatitud = (EditText) findViewById(R.id.edtLatitud);
 edtlongitud = (EditText) findViewById(R.id.edtLongitud);
@@ -86,4 +106,36 @@ locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
 locationManager.requestLocationUpdates(
 LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 }
+
+public void insertarDir(View v){
+	String latitud=edtlatitud.getText().toString();
+	String longitud=edtlongitud.getText().toString();
+	String altitud=edtaltitud.getText().toString();
+	String direccion=edtdireccion.getText().toString();
+	//GregorianCalendar fecha=new GregorianCalendar();
+	
+	String url=null;
+	
+	//agregar en servicio local
+	
+	JSONObject datosDir= new JSONObject();
+	try{
+		datosDir.put("latitud", latitud);
+		datosDir.put("longitud", longitud);
+		datosDir.put("altitud", altitud);
+		datosDir.put("direccion", direccion);
+		//datosDir.put("fechaacceso", fecha);
+		
+		//ControladorServicio.insertarDir(urlLocal,datosDir,this);
+		
+	}catch (Exception e){
+		Toast.makeText(this, "Error en los datos", Toast.LENGTH_LONG).show();
+	}
+	
+	url=urlExterno+"?latitud="+latitud+"&longitud="+longitud+"&altitud="+altitud+"&direccion="+direccion;
+	ControladorServicioM.insertarDirExterno(url,this);
+	
+	
+}
+
 }

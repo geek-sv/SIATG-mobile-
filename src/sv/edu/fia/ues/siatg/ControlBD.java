@@ -1084,7 +1084,52 @@ public String eliminar(Tperfil tperfil){
 								return regAfectados;
 							}
 							
+							
+							////carolina///
 						
+							public String insertar(TG tg) {
+								String regInsertados = "Registro Insertado Nº= ";
+
+								long contador = 0;
+								
+									ContentValues def = new ContentValues();
+
+									def.put("id_tg", tg.getIdtg());
+									def.put("id_perfil", tg.getIdperfil());
+									def.put("fecha_inicio", tg.getFechainicio());
+									def.put("fecha_fin", tg.getFechafin());
+									contador = db.insert("trabajo_graduacion", null, def);
+								//}
+								if (contador == -1 || contador == 0) {
+									regInsertados = "Error, Verifique que exista TG"
+											+ tg.getIdtg();
+								} else {
+									regInsertados = regInsertados + contador;
+								}
+								return regInsertados;
+							}
+
+							
+
+							 //consultar TG
+							
+								public TG consultarTG(String idtg){
+									String[] id = {idtg};
+									Cursor cursor = db.query("trabajo_graduacion", camposTrabajo_graduacion, "idtg = ?", id,null, null, null);
+									if(cursor.moveToFirst()){
+										TG tg = new TG();
+										tg.setIdtg(cursor.getString(0));
+										tg.setIdperfil(cursor.getString(1));
+										tg.setFechainicio(cursor.getString(2));
+										tg.setFechafin(cursor.getString(3));
+									
+										return tg;
+									}
+									else
+									{
+										return null;
+									}
+								}
 
 	private boolean verificarIntegridadDiana(Object dato, int relacion)
 			throws SQLException {
@@ -1445,19 +1490,19 @@ public String llenarBD(){
 		
 				
 			insertar(tetapa);
-		}
+		}*/
 
-	 Ttrabajograduacion trabajograduacion = new  Ttrabajograduacion();
+	 TG tg = new  TG();
 	for(int i=0;i<10;i++){
-		trabajograduacion.setIdtg(VTGidtg[i]);
-		trabajograduacion.setIdperfil(VTGidperfil[i]);
-		trabajograduacion.setFechainicio(VTGfechainicio[i]);
-		trabajograduacion.setFechafin(VTGfechafin[i]);
+		tg.setIdtg(VTGidtg[i]);
+		tg.setIdperfil(VTGidperfil[i]);
+		tg.setFechainicio(VTGfechainicio[i]);
+		tg.setFechafin(VTGfechafin[i]);
 			
-		insertar(trabajograduacion);
+		insertar(tg);
 	}
 		
-	*/
+	
 		  Tasesoria tasesoria = new Tasesoria();
 			for(int i=0;i<10;i++){
 				tasesoria.setid_asesoria(VASEidasesoria[i]);

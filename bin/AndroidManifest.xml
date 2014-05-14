@@ -7,6 +7,9 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />
+	<uses-permission android:name="android.permission.INTERNET" />
+    
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -289,6 +292,42 @@
         <activity
             android:name="sv.edu.fia.ues.siatg.DocenteasignadoEliminarActivity"
             android:label="@string/title_activity_docenteasignado_eliminar" >
+        </activity>
+        <activity
+            android:name="sv.edu.fia.ues.siatg.GPSActivity"
+            android:label="@string/title_activity_gps" >
+        </activity>
+        <activity
+            android:name="sv.edu.fia.ues.siatg.TGMenuActivity"
+            android:label="@string/title_activity_tgmenu" >
+        </activity>
+        <activity
+            android:name="sv.edu.fia.ues.siatg.TGInsertarActivity"
+            android:label="@string/title_activity_tginsertar" >
+        </activity>
+        <activity
+            android:name="sv.edu.fia.ues.siatg.TGConsultarActivity"
+            android:label="@string/title_activity_tgconsultar" >
+        </activity>
+        <activity
+            android:name="sv.edu.fia.ues.siatg.WebServiceHostingActivity"
+            android:label="@string/title_activity_web_service_hosting" >
+        </activity>
+        <activity
+            android:name="sv.edu.fia.ues.siatg.WS_docentes_qrActivity"
+            android:label="@string/title_activity_ws_docentes_qr" >
+        </activity>
+        <activity
+            android:name="sv.edu.fia.ues.siatg.Logo"
+            android:label="@string/title_activity_logo" >
+        </activity>
+        <activity
+            android:name="sv.edu.fia.ues.siatg.WS_notas_estudiantes_qrActivity"
+            android:label="@string/title_activity_ws_notas_estudiantes_qr" >
+        </activity>
+        <activity
+            android:name="sv.edu.fia.ues.siatg.ActualizarDocentesActivity"
+            android:label="@string/title_activity_actualizar_docentes" >
         </activity>
     </application>
 

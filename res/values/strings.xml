@@ -151,6 +151,23 @@
     <string name="txtLongitud">Longitud</string>
     <string name="txtDireccion">Direccion</string>
     <string name="btnObtenerDatos">Obtener Datos Direccion</string>
-    
-
+    <string name="title_activity_tgmenu">TGMenuActivity</string>
+    <string name="title_activity_tginsertar">TGInsertarActivity</string>
+    <string name="idtg">Id TG</string>
+    <string name="idperfil">Id Perfil</string>
+    <string name="fechainicio">Fecha inicio</string>
+    <string name="fechafin">Fecha Fin</string>
+    <string name="title_activity_tgconsultar">TGConsultarActivity</string>
+    <string name="title_activity_web_service_hosting">WebServiceHostingActivity</string>
+    <string name="title_activity_ws_docentes_qr">WS_docentes_qrActivity</string>
+    <string name="title_activity_logo">Codigo QR inválido</string>
+    <string name="title_activity_ws_notas_estudiantes_qr">WS_notas_estudiantes_qrActivity</string>
+    <string name="title_activity_actualizar_docentes">ActualizarDocentesActivity</string>
+	<string name="indicacion_docente">Indicación Docente</string>
+    <string name="formato_fecha">Formato Fecha</string>
+    <string name="servicio_local">servicio_local</string>
+    <string name="servicio_externo">servicio_externo</string>
+    <string name="guardar">guardar</string>
+   
+	<string name="btnGuardarDireccion">Guardar Direccion</string>
 </resources>

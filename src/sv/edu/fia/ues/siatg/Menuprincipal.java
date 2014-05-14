@@ -10,8 +10,8 @@ import android.widget.Toast;
 
 public class Menuprincipal extends ListActivity {
 
-	String[] menu={"Tipo de proyecto","Perfil","Revisión de perfil","Docente","Grupo TG","Integrantes de grupo","Alumno","Trabajo de Graduacion","Nota","Defensa","Etapa","Asesoria","Detalle Nota","Asistencia","Ubicacion","Docente Asignado","GPS","LLenar Base de Datos"};
-	String[] activities={"TipoProyectoMenuActivity","PerfilMenuActivity","RevisionperfilMenuActivity","DocenteMenuActivity","GrupoTGMenuActivity","IntegrantegrupoMenuActivity","AlumnoMenuActivity","8","9","DefensaMenuActivity","11","AsesoriaMenuActivity","DetalleNotaMenuActivity","AsistenciaMenuActivity","UbicacionMenuActivity","DocenteasignadoMenuActivity","GPSActivity"};
+	String[] menu={"Tipo de proyecto","Perfil","Revisión de perfil","Docente","Grupo TG","Integrantes de grupo","Alumno","Trabajo de Graduacion","WEB Services","Defensa","Etapa","Asesoria","Detalle Nota","Asistencia","Ubicacion","Docente Asignado","GPS","LLenar Base de Datos"};
+	String[] activities={"TipoProyectoMenuActivity","PerfilMenuActivity","RevisionperfilMenuActivity","DocenteMenuActivity","GrupoTGMenuActivity","IntegrantegrupoMenuActivity","AlumnoMenuActivity","TGMenuActivity","WebServiceHostingActivity","DefensaMenuActivity","11","AsesoriaMenuActivity","DetalleNotaMenuActivity","AsistenciaMenuActivity","UbicacionMenuActivity","DocenteasignadoMenuActivity","GPSActivity"};
 	ControlBD BDhelper;
 	
 	@Override

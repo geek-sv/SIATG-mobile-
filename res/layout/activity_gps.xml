@@ -49,4 +49,11 @@
         android:layout_height="wrap_content"
         android:text="@string/btnObtenerDatos"/>
     
+    <Button 
+        android:id="@+id/btnGuardarDatos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="insertarDir"
+        android:text="@string/btnGuardarDireccion"/>
+    
 </LinearLayout>
